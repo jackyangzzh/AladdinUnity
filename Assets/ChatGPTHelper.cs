@@ -1,15 +1,15 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.Events;
 using System.IO;
+using UnityEditor;
+using Unity.EditorCoroutines.Editor;
 
 namespace ChatGPTWrapper
 {
-    public class ChatGPTConversation : MonoBehaviour
+    public class ChatGPTHelper 
     {
-        [Header("Parameters")]
-        [SerializeField]
-        private string _apiKey;
+        private const string _apiKey = "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";
 
         private enum Model
         {
@@ -18,14 +18,11 @@ namespace ChatGPTWrapper
             None
         }
 
-        [SerializeField]
-        private Model _model = Model.Davinci;
+        private const Model _model = Model.Davinci;
 
-        [SerializeField]
-        private int _maxTokens = 3072;
+        private const int _maxTokens = 3072;
 
-        [SerializeField]
-        private float _temperature = 0.6f;
+        private const float _temperature = 0.6f;
 
         private const string _uri = "https://api.openai.com/v1/completions";
 
@@ -35,32 +32,10 @@ namespace ChatGPTWrapper
         private Prompt _prompt = new();
         private string _lastUserMsg;
         private string _lastChatGPTMsg;
-        private string _selectedModel;
+        private string _selectedModel = "text-davinci-003";
 
         [Space(15)]
         public UnityEvent<string> chatGPTResponse = new();
-
-        private void OnEnable()
-        {
-            _reqHeaders = new List<(string, string)>
-            {
-                ("Authorization", $"Bearer {_apiKey}"),
-                ("Content-Type", "application/json")
-            };
-
-            switch (_model)
-            {
-                case Model.Davinci:
-                    _selectedModel = "text-davinci-003";
-                    break;
-                case Model.Curie:
-                    _selectedModel = "text-curie-001";
-                    break;
-                case Model.None:
-                    _selectedModel = null;
-                    break;
-            }
-        }
 
         public void SendToChatGPT(string message)
         {
@@ -83,7 +58,13 @@ namespace ChatGPTWrapper
 
             string json = JsonUtility.ToJson(reqObj);
 
-            StartCoroutine(requests.PostReq<ChatGPTRes>(_uri, json, ResolveResponse, _reqHeaders));
+            _reqHeaders = new List<(string, string)>
+            {
+                ("Authorization", $"Bearer {_apiKey}"),
+                ("Content-Type", "application/json")
+            };
+
+            EditorCoroutineUtility.StartCoroutine(requests.PostReq<ChatGPTRes>(_uri, json, ResolveResponse, _reqHeaders), this);
         }
 
         private void ResolveResponse(ChatGPTRes res)

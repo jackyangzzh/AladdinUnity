@@ -1,3 +1,4 @@
+using ChatGPTWrapper;
 using Codice.Client.Common.GameUI;
 using System.Collections;
 using System.Collections.Generic;
@@ -60,7 +61,9 @@ public class ScriptGeniusElement : VisualElement
         
         void GenerateScript()
         {
-            Debug.Log(scriptNameField.text);
+            ChatGPTHelper chatGPT = new();
+            chatGPT.SendToChatGPT(scriptPromptField.text);
+            Debug.Log(scriptPromptField.text);
         }
     }
 
