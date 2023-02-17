@@ -1,10 +1,9 @@
 using ChatGPTWrapper;
-using Codice.Client.Common.GameUI;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+
 
 public class ScriptGenius : EditorWindow
 {
@@ -46,6 +45,15 @@ public class ScriptGeniusElement : VisualElement
         };
         Add(scriptTypeField);
 
+        ObjectField settingField = new()
+        {
+            label = "Setting",
+            value = Resources.Load("DefaultChatGPTSetting"),
+            objectType = typeof(ChatGPTSetting),
+
+        };
+        Add(settingField);
+
         TextField scriptPromptField = new()
         {
             label = "Script Prompt"
@@ -58,11 +66,11 @@ public class ScriptGeniusElement : VisualElement
         };
         Add(generateScriptButton);
 
-        
+
         void GenerateScript()
         {
             ChatGPTHelper chatGPT = new();
-            chatGPT.SendToChatGPT(scriptPromptField.text);
+            chatGPT.SendToChatGPT(scriptPromptField.text, settingField.value as ChatGPTSetting);
             Debug.Log(scriptPromptField.text);
         }
     }

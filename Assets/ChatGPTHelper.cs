@@ -7,16 +7,16 @@ using Unity.EditorCoroutines.Editor;
 
 namespace ChatGPTWrapper
 {
+    public enum Model
+    {
+        Davinci,
+        Curie,
+        None
+    }
+
     public class ChatGPTHelper 
     {
         private const string _apiKey = "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";
-
-        private enum Model
-        {
-            Davinci,
-            Curie,
-            None
-        }
 
         private const Model _model = Model.Davinci;
 
@@ -29,31 +29,31 @@ namespace ChatGPTWrapper
         private List<(string, string)> _reqHeaders;
 
         private Requests requests = new();
-        private Prompt _prompt = new();
-        private string _lastUserMsg;
-        private string _lastChatGPTMsg;
-        private string _selectedModel = "text-davinci-003";
+        private Prompt prompt = new();
+        private string lastUserMsg;
+        private string lastChatGPTMsg;
+        private string selectedModel = "text-davinci-003";
 
         [Space(15)]
         public UnityEvent<string> chatGPTResponse = new();
 
-        public void SendToChatGPT(string message)
+        public void SendToChatGPT(string message, ChatGPTSetting setting)
         {
-            if (_selectedModel == null)
+            if (selectedModel == null)
             {
                 Debug.LogWarning($"{nameof(ChatGPTConversation)} [SendToChatGPT] Model name for ChatGPT's API is not set up yet.");
                 return;
             }
 
-            _lastUserMsg = message;
-            _prompt.AppendText(Prompt.Speaker.User, message);
+            lastUserMsg = message;
+            prompt.AppendText(Prompt.Speaker.User, message);
 
             ChatGPTReq reqObj = new()
             {
-                model = _selectedModel,
-                prompt = _prompt.CurrentPrompt,
-                max_tokens = _maxTokens,
-                temperature = _temperature,
+                model = selectedModel,
+                prompt = prompt.CurrentPrompt,
+                max_tokens = setting.MaxToken,
+                temperature = setting.Temperature,
             };
 
             string json = JsonUtility.ToJson(reqObj);
@@ -70,14 +70,14 @@ namespace ChatGPTWrapper
         private void ResolveResponse(ChatGPTRes res)
         {
             //Debug.Log($"{nameof(ChatGPTConversation)}: {res.choices[0].text}");
-            _lastChatGPTMsg = res.choices[0].text
+            lastChatGPTMsg = res.choices[0].text
                 .TrimStart('\n')
                 .Replace("<|im_end|>", "");
 
             GenerateShaderCode(res.choices[0].text);
 
-            _prompt.AppendText(Prompt.Speaker.ChatGPT, _lastChatGPTMsg);
-            chatGPTResponse.Invoke(_lastChatGPTMsg);
+            prompt.AppendText(Prompt.Speaker.ChatGPT, lastChatGPTMsg);
+            chatGPTResponse.Invoke(lastChatGPTMsg);
         }
 
         private void GenerateShaderCode(string inputText)
