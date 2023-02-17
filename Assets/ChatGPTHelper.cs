@@ -16,17 +16,9 @@ namespace ChatGPTWrapper
 
     public class ChatGPTHelper 
     {
-        private const string _apiKey = "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";
-
-        private const Model _model = Model.Davinci;
-
-        private const int _maxTokens = 3072;
-
-        private const float _temperature = 0.6f;
-
         private const string _uri = "https://api.openai.com/v1/completions";
 
-        private List<(string, string)> _reqHeaders;
+        private List<(string, string)> reqHeaders;
 
         private Requests requests = new();
         private Prompt prompt = new();
@@ -58,13 +50,13 @@ namespace ChatGPTWrapper
 
             string json = JsonUtility.ToJson(reqObj);
 
-            _reqHeaders = new List<(string, string)>
+            reqHeaders = new List<(string, string)>
             {
-                ("Authorization", $"Bearer {_apiKey}"),
+                ("Authorization", $"Bearer {setting.APIKey}"),
                 ("Content-Type", "application/json")
             };
 
-            EditorCoroutineUtility.StartCoroutine(requests.PostReq<ChatGPTRes>(_uri, json, ResolveResponse, _reqHeaders), this);
+            EditorCoroutineUtility.StartCoroutine(requests.PostReq<ChatGPTRes>(_uri, json, ResolveResponse, reqHeaders), this);
         }
 
         private void ResolveResponse(ChatGPTRes res)
