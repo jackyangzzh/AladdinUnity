@@ -4,6 +4,7 @@ using UnityEngine.Events;
 using System.IO;
 using UnityEditor;
 using Unity.EditorCoroutines.Editor;
+using Unity.VisualScripting;
 
 namespace ChatGPTWrapper
 {
@@ -29,7 +30,7 @@ namespace ChatGPTWrapper
         [Space(15)]
         public UnityEvent<string> chatGPTResponse = new();
 
-        public void SendToChatGPT(string message, ChatGPTSetting setting)
+        public void SendToChatGPT(string message, ChatGPTSetting setting, string scriptType)
         {
             if (selectedModel == null)
             {
@@ -40,10 +41,26 @@ namespace ChatGPTWrapper
             lastUserMsg = message;
             prompt.AppendText(Prompt.Speaker.User, message);
 
+            string scriptPrompt = "";
+            switch(scriptType)
+            {
+                case ScriptGeniusUtil.CSharpText:
+                    scriptPrompt = ScriptGeniusUtil.CSharpPrompt;
+                    break;
+                case ScriptGeniusUtil.ShaderText:
+                    scriptPrompt = ScriptGeniusUtil.ShaderPrompt;
+                    break;
+                default:
+                    scriptPrompt = prompt.CurrentPrompt;
+                    break;
+            }
+
+            Debug.Log(scriptPrompt);
+
             ChatGPTReq reqObj = new()
             {
                 model = selectedModel,
-                prompt = prompt.CurrentPrompt,
+                prompt = scriptPrompt,
                 max_tokens = setting.MaxToken,
                 temperature = setting.Temperature,
             };

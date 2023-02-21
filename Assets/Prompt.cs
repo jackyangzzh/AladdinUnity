@@ -1,8 +1,8 @@
 ﻿namespace ChatGPTWrapper {
     public class Prompt
     {
-        private string _currentPrompt = "You are ChatGPT, a large language model trained by OpenAI.";
-        public string CurrentPrompt => _currentPrompt;
+        private string currentPrompt = "You are ChatGPT, a large language model trained by OpenAI.";
+        public string CurrentPrompt => currentPrompt;
 
         public enum Speaker {
             User,
@@ -14,10 +14,10 @@
             switch (speaker)
             {
                 case Speaker.User:
-                    _currentPrompt += " \n User: " + text + " \n ChatGPT: ";
+                    currentPrompt += " \n User: " + text + " \n ChatGPT: ";
                     break;
                 case Speaker.ChatGPT:
-                    _currentPrompt += text;
+                    currentPrompt += text;
                     break;
             }
         }

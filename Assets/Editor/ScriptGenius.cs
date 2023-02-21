@@ -26,9 +26,6 @@ public class ScriptGenius : EditorWindow
 
 public class ScriptGeniusElement : VisualElement
 {
-    private const string CSharpText = "C#";
-    private const string ShaderText = "Shader";
-
     public ScriptGeniusElement(EditorWindow window)
     {
         TextField scriptNameField = new()
@@ -40,7 +37,7 @@ public class ScriptGeniusElement : VisualElement
         DropdownField scriptTypeField = new()
         {
             label = "Script Type",
-            choices = { CSharpText, ShaderText },
+            choices = { ScriptGeniusUtil.CSharpText, ScriptGeniusUtil.ShaderText },
             index = 0,
         };
         Add(scriptTypeField);
@@ -70,8 +67,7 @@ public class ScriptGeniusElement : VisualElement
         void GenerateScript()
         {
             ChatGPTHelper chatGPT = new();
-            chatGPT.SendToChatGPT(scriptPromptField.text, settingField.value as ChatGPTSetting);
-            Debug.Log(scriptPromptField.text);
+            chatGPT.SendToChatGPT(scriptPromptField.text, settingField.value as ChatGPTSetting, scriptTypeField.value);
         }
     }
 
