@@ -1,8 +1,7 @@
 ﻿namespace ChatGPTWrapper {
     public class Prompt
     {
-        private string currentPrompt = "You are ChatGPT, a large language model trained by OpenAI.";
-        public string CurrentPrompt => currentPrompt;
+        public string CurrentPrompt = ScriptGeniusUtil.DefaultPrompt;
 
         public enum Speaker {
             User,
@@ -14,10 +13,10 @@
             switch (speaker)
             {
                 case Speaker.User:
-                    currentPrompt += " \n User: " + text + " \n ChatGPT: ";
+                    CurrentPrompt += " \n User: " + text + " \n ChatGPT: ";
                     break;
                 case Speaker.ChatGPT:
-                    currentPrompt += text;
+                    CurrentPrompt += text;
                     break;
             }
         }

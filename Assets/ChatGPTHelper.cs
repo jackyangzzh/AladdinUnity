@@ -2,9 +2,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.Events;
 using System.IO;
-using UnityEditor;
 using Unity.EditorCoroutines.Editor;
-using Unity.VisualScripting;
+using System.Globalization;
 
 namespace ChatGPTWrapper
 {
@@ -15,7 +14,7 @@ namespace ChatGPTWrapper
         None
     }
 
-    public class ChatGPTHelper 
+    public class ChatGPTHelper
     {
         private const string _uri = "https://api.openai.com/v1/completions";
 
@@ -27,10 +26,19 @@ namespace ChatGPTWrapper
         private string lastChatGPTMsg;
         private string selectedModel = "text-davinci-003";
 
+        private string fileName = "Untitled";
+        private string scriptType;
+
         [Space(15)]
         public UnityEvent<string> chatGPTResponse = new();
 
-        public void SendToChatGPT(string message, ChatGPTSetting setting, string scriptType)
+        public ChatGPTHelper (string fileName, string scriptType)
+        {
+            this.fileName = fileName;
+            this.scriptType = scriptType;
+        }
+
+        public void SendToChatGPT(string message, ChatGPTSetting setting)
         {
             if (selectedModel == null)
             {
@@ -39,28 +47,29 @@ namespace ChatGPTWrapper
             }
 
             lastUserMsg = message;
-            prompt.AppendText(Prompt.Speaker.User, message);
 
             string scriptPrompt = "";
             switch(scriptType)
             {
                 case ScriptGeniusUtil.CSharpText:
-                    scriptPrompt = ScriptGeniusUtil.CSharpPrompt;
+                    prompt.CurrentPrompt = ScriptGeniusUtil.CSharpPrompt;
                     break;
                 case ScriptGeniusUtil.ShaderText:
-                    scriptPrompt = ScriptGeniusUtil.ShaderPrompt;
+                    prompt.CurrentPrompt = ScriptGeniusUtil.ShaderPrompt;
                     break;
                 default:
-                    scriptPrompt = prompt.CurrentPrompt;
+                    prompt.CurrentPrompt = ScriptGeniusUtil.DefaultPrompt;
                     break;
             }
+
+            prompt.AppendText(Prompt.Speaker.User, message);
 
             Debug.Log(scriptPrompt);
 
             ChatGPTReq reqObj = new()
             {
                 model = selectedModel,
-                prompt = scriptPrompt,
+                prompt = prompt.CurrentPrompt,
                 max_tokens = setting.MaxToken,
                 temperature = setting.Temperature,
             };
@@ -73,7 +82,7 @@ namespace ChatGPTWrapper
                 ("Content-Type", "application/json")
             };
 
-            EditorCoroutineUtility.StartCoroutine(requests.PostReq<ChatGPTRes>(_uri, json, ResolveResponse, reqHeaders), this);
+            _ = EditorCoroutineUtility.StartCoroutine(requests.PostReq<ChatGPTRes>(_uri, json, ResolveResponse, reqHeaders), this);
         }
 
         private void ResolveResponse(ChatGPTRes res)
@@ -83,20 +92,22 @@ namespace ChatGPTWrapper
                 .TrimStart('\n')
                 .Replace("<|im_end|>", "");
 
-            GenerateShaderCode(res.choices[0].text);
+            GenerateScript(res.choices[0].text);
 
             prompt.AppendText(Prompt.Speaker.ChatGPT, lastChatGPTMsg);
             chatGPTResponse.Invoke(lastChatGPTMsg);
         }
 
-        private void GenerateShaderCode(string inputText)
+        private void GenerateScript(string inputText)
         {
-            string path = Application.dataPath + "/shader.shader";
+
+            string path = Path.Combine(Application.dataPath, fileName);
             if (File.Exists(path))
             {
                 File.Delete(path);
             }
             File.WriteAllText(path, inputText);
+            Debug.Log($"[{nameof(ChatGPTHelper)}] script created in: {path}");
         }
     }
 }

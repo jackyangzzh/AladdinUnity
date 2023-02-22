@@ -66,8 +66,8 @@ public class ScriptGeniusElement : VisualElement
 
         void GenerateScript()
         {
-            ChatGPTHelper chatGPT = new();
-            chatGPT.SendToChatGPT(scriptPromptField.text, settingField.value as ChatGPTSetting, scriptTypeField.value);
+            ChatGPTHelper chatGPT = new(scriptNameField.value, scriptTypeField.value);
+            chatGPT.SendToChatGPT(scriptPromptField.text, settingField.value as ChatGPTSetting);
         }
     }
 
