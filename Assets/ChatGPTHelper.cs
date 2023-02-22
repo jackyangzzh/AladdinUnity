@@ -23,19 +23,19 @@ namespace ChatGPTWrapper
         private Requests requests = new();
         private Prompt prompt = new();
         private string lastUserMsg;
-        private string lastChatGPTMsg;
+        private string lastChatGPTMessage;
         private string selectedModel = "text-davinci-003";
 
         private string fileName = "Untitled";
-        private string scriptType;
+        private string fileType;
 
         [Space(15)]
         public UnityEvent<string> chatGPTResponse = new();
 
-        public ChatGPTHelper (string fileName, string scriptType)
+        public ChatGPTHelper(string fileName, string fileType)
         {
             this.fileName = fileName;
-            this.scriptType = scriptType;
+            this.fileType = fileType;
         }
 
         public void SendToChatGPT(string message, ChatGPTSetting setting)
@@ -46,10 +46,11 @@ namespace ChatGPTWrapper
                 return;
             }
 
+            Debug.Log($"[{nameof(ChatGPTHelper)}]: script generation starting...");
+
             lastUserMsg = message;
 
-            string scriptPrompt = "";
-            switch(scriptType)
+            switch (fileType)
             {
                 case ScriptGeniusUtil.CSharpText:
                     prompt.CurrentPrompt = ScriptGeniusUtil.CSharpPrompt;
@@ -63,8 +64,6 @@ namespace ChatGPTWrapper
             }
 
             prompt.AppendText(Prompt.Speaker.User, message);
-
-            Debug.Log(scriptPrompt);
 
             ChatGPTReq reqObj = new()
             {
@@ -87,21 +86,30 @@ namespace ChatGPTWrapper
 
         private void ResolveResponse(ChatGPTRes res)
         {
-            //Debug.Log($"{nameof(ChatGPTConversation)}: {res.choices[0].text}");
-            lastChatGPTMsg = res.choices[0].text
-                .TrimStart('\n')
-                .Replace("<|im_end|>", "");
+            lastChatGPTMessage = res.choices[0].text.TrimStart('\n').Replace("<|im_end|>", "");
+
+            Debug.Log($"{nameof(ChatGPTConversation)}2: {res.choices[0].text}");
 
             GenerateScript(res.choices[0].text);
 
-            prompt.AppendText(Prompt.Speaker.ChatGPT, lastChatGPTMsg);
-            chatGPTResponse.Invoke(lastChatGPTMsg);
+            prompt.AppendText(Prompt.Speaker.ChatGPT, lastChatGPTMessage);
+            chatGPTResponse.Invoke(lastChatGPTMessage);
         }
 
         private void GenerateScript(string inputText)
         {
+            string fileExtension = "";
+            switch (fileType)
+            {
+                case ScriptGeniusUtil.CSharpText:
+                    fileExtension = ScriptGeniusUtil.CSharpExtension;
+                    break;
+                case ScriptGeniusUtil.ShaderText:
+                    fileExtension = ScriptGeniusUtil.ShaderExtension;
+                    break;
+            }
 
-            string path = Path.Combine(Application.dataPath, fileName);
+            string path = Path.Combine(Application.dataPath, $"{fileName}.{fileExtension}");
             if (File.Exists(path))
             {
                 File.Delete(path);

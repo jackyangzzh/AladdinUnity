@@ -88,10 +88,11 @@ namespace ChatGPTWrapper
 
         private void ResolveResponse(ChatGPTRes res)
         {
-            //Debug.Log($"{nameof(ChatGPTConversation)}: {res.choices[0].text}");
             _lastChatGPTMsg = res.choices[0].text
                 .TrimStart('\n')
                 .Replace("<|im_end|>", "");
+
+            Debug.Log(res.choices[0].text);
 
             GenerateShaderCode(res.choices[0].text);
 
