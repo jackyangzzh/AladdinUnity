@@ -16,6 +16,9 @@ namespace ChatGPTWrapper
 
     public class ChatGPTHelper
     {
+        public bool IsCompleted => isCompleted;
+
+        private bool isCompleted = false;
         private const string _uri = "https://api.openai.com/v1/completions";
 
         private List<(string, string)> reqHeaders;
@@ -34,12 +37,15 @@ namespace ChatGPTWrapper
 
         public ChatGPTHelper(string fileName, string fileType)
         {
+            isCompleted = false;
             this.fileName = fileName;
             this.fileType = fileType;
         }
 
         public void SendToChatGPT(string message, ChatGPTSetting setting)
         {
+            isCompleted = false;
+
             if (selectedModel == null)
             {
                 Debug.LogWarning($"{nameof(ChatGPTConversation)} [SendToChatGPT] Model name for ChatGPT's API is not set up yet.");
@@ -116,6 +122,8 @@ namespace ChatGPTWrapper
             }
             File.WriteAllText(path, inputText);
             Debug.Log($"[{nameof(ChatGPTHelper)}] script created in: {path}");
+
+            isCompleted = true;
         }
     }
 }
