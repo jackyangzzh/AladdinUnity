@@ -30,16 +30,16 @@ namespace ChatGPTWrapper
         private string selectedModel = "text-davinci-003";
 
         private string fileName = "Untitled";
-        private string fileType;
+        private AladdinUnityUtil.ScriptType scriptType;
 
         [Space(15)]
         public UnityEvent<string> chatGPTResponse = new();
 
-        public ChatGPTHelper(string fileName, string fileType)
+        public ChatGPTHelper(string fileName, AladdinUnityUtil.ScriptType scriptType)
         {
             isCompleted = false;
             this.fileName = fileName;
-            this.fileType = fileType;
+            this.scriptType = scriptType;
         }
 
         public void SendToChatGPT(string message, ChatGPTSetting setting)
@@ -56,16 +56,16 @@ namespace ChatGPTWrapper
 
             lastUserMsg = message;
 
-            switch (fileType)
+            switch (scriptType)
             {
-                case ScriptGeniusUtil.CSharpText:
-                    prompt.CurrentPrompt = ScriptGeniusUtil.CSharpPrompt;
+                case AladdinUnityUtil.ScriptType.CSharp:
+                    prompt.CurrentPrompt = AladdinUnityUtil.CSharpPrompt;
                     break;
-                case ScriptGeniusUtil.ShaderText:
-                    prompt.CurrentPrompt = ScriptGeniusUtil.ShaderPrompt;
+                case AladdinUnityUtil.ScriptType.Shader:
+                    prompt.CurrentPrompt = AladdinUnityUtil.ShaderPrompt;
                     break;
                 default:
-                    prompt.CurrentPrompt = ScriptGeniusUtil.DefaultPrompt;
+                    prompt.CurrentPrompt = AladdinUnityUtil.DefaultPrompt;
                     break;
             }
 
@@ -105,13 +105,13 @@ namespace ChatGPTWrapper
         private void GenerateScript(string inputText)
         {
             string fileExtension = "";
-            switch (fileType)
+            switch (scriptType)
             {
-                case ScriptGeniusUtil.CSharpText:
-                    fileExtension = ScriptGeniusUtil.CSharpExtension;
+                case AladdinUnityUtil.ScriptType.CSharp:
+                    fileExtension = AladdinUnityUtil.CSharpExtension;
                     break;
-                case ScriptGeniusUtil.ShaderText:
-                    fileExtension = ScriptGeniusUtil.ShaderExtension;
+                case AladdinUnityUtil.ScriptType.Shader:
+                    fileExtension = AladdinUnityUtil.ShaderExtension;
                     break;
             }
 

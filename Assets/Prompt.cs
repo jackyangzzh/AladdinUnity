@@ -1,7 +1,7 @@
 ﻿namespace ChatGPTWrapper {
     public class Prompt
     {
-        public string CurrentPrompt = ScriptGeniusUtil.DefaultPrompt;
+        public string CurrentPrompt = AladdinUnityUtil.DefaultPrompt;
 
         public enum Speaker {
             User,

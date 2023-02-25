@@ -1,7 +1,10 @@
-public static class ScriptGeniusUtil
+public static class AladdinUnityUtil
 {
-    public const string CSharpText = "C#";
-    public const string ShaderText = "Shader";
+    public enum ScriptType
+    {
+        CSharp,
+        Shader
+    }
 
     public const string CSharpExtension = "cs";
     public const string ShaderExtension = "shader";
