@@ -18,9 +18,13 @@ class AladdinUnity : EditorWindow
     private string scriptPrompt;
     private ChatGPTSetting chatGPTSetting;
     private AladdinUnityUtil.ScriptType scriptType;
-    
+
+    private bool scriptGenerating = false;
+    private string generateScriptButtonText = "Generate Script";
+
     private void OnEnable()
     {
+        scriptGenerating = false;
         chatGPTSetting = Resources.Load("DefaultChatGPTSetting") as ChatGPTSetting;
     }
 
@@ -36,33 +40,37 @@ class AladdinUnity : EditorWindow
         style.wordWrap = true;
         scriptPrompt = EditorGUILayout.TextArea(scriptPrompt, style);
 
-        if (GUILayout.Button("Generate Script"))
+        if (scriptGenerating)
         {
-            GenerateScript();
+            EditorGUILayout.LabelField("Script generating...");
+        }
+        else
+        {
+            if (GUILayout.Button(generateScriptButtonText))
+            {
+                GenerateScript();
+            }
         }
     }
 
     private void GenerateScript()
     {
-        Debug.Log("Generating Script");
         _ = EditorCoroutineUtility.StartCoroutine(GenerateScriptAsync(), this);
     }
 
     private IEnumerator GenerateScriptAsync()
     {
+        scriptGenerating = true;
+
         ChatGPTHelper chatGPT = new(scriptName, scriptType);
         chatGPT.SendToChatGPT(scriptPrompt, chatGPTSetting);
-
-        //generateScriptButton.text = "Generating script...";
-        //generateScriptButton.SetEnabled(false);
 
         while (!chatGPT.IsCompleted)
         {
             yield return null;
         }
 
-        //generateScriptButton.text = "Generate Script";
-        //generateScriptButton.SetEnabled(true);
+        scriptGenerating = false;
     }
 
 }
