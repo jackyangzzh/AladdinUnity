@@ -16,10 +16,17 @@ class AladinTextureGen : EditorWindow
 
     private string textureName = "Untitled";
     private string texturePrompt;
-    private int textureSize;
+    private SizeOptions textureSize;
     private ChatGPTSetting chatGPTSetting;
 
     private bool scriptGenerating = false;
+
+    private enum SizeOptions
+    {
+        _256x256 = 256,
+        _512x512 = 512,
+        _1024x1024 = 1024,
+    }
 
     private void OnEnable()
     {
@@ -33,7 +40,7 @@ class AladinTextureGen : EditorWindow
 
         chatGPTSetting = EditorGUILayout.ObjectField("Setting", chatGPTSetting, typeof(ChatGPTSetting), false) as ChatGPTSetting;
 
-        textureSize = EditorGUILayout.IntField("Texture Size", textureSize);
+        textureSize = (SizeOptions)EditorGUILayout.EnumPopup("Texture Size", textureSize);
 
         EditorGUILayout.LabelField("Texture Prompt");
         GUIStyle style = new GUIStyle(EditorStyles.textArea);
@@ -46,7 +53,7 @@ class AladinTextureGen : EditorWindow
         }
         else
         {
-            if (GUILayout.Button("Generate Script"))
+            if (GUILayout.Button("Generate Texture"))
             {
                 if (string.IsNullOrWhiteSpace(texturePrompt))
                 {
@@ -60,8 +67,8 @@ class AladinTextureGen : EditorWindow
 
     private void GenerateScript()
     {
-        DallEApi dalle = new(texturePrompt, textureSize);
-        _ = EditorCoroutineUtility.StartCoroutine(dalle.GenerateTexture(chatGPTSetting), this);
+        DallEApi dalle = new(texturePrompt, (int)textureSize);
+        _ = EditorCoroutineUtility.StartCoroutine(dalle.GenerateTexture(chatGPTSetting, textureName), this);
     }
 
 }

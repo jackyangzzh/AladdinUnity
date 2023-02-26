@@ -2,12 +2,13 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
 using System.Text;
+using System.IO;
 
 public class Prompt
 {
     public string prompt;
     public int n;
-    public string imageSize;
+    public string size;
 }
 
 public class DallEApi
@@ -23,10 +24,10 @@ public class DallEApi
         prompt = new Prompt();
         prompt.prompt = imagePrompt;
         prompt.n = 1;
-        prompt.imageSize = $"{imageSize}x{imageSize}";
+        prompt.size = $"{imageSize}x{imageSize}";
     }
 
-    public IEnumerator GenerateTexture(ChatGPTSetting setting)
+    public IEnumerator GenerateTexture(ChatGPTSetting setting, string textureName)
     {
         Debug.Log($"{nameof(DallEApi)} generating image...");
         isCompleted = false;
@@ -58,7 +59,16 @@ public class DallEApi
         UnityWebRequest www = UnityWebRequestTexture.GetTexture(url);
         yield return www.SendWebRequest();
 
-        Texture result = DownloadHandlerTexture.GetContent(www);
+        Texture texture = DownloadHandlerTexture.GetContent(www);
+        Texture2D tex = texture as Texture2D;
+
+        string path = Path.Combine(Application.dataPath, $"{textureName}.jpg");
+        if (File.Exists(path))
+        {
+            File.Delete(path);
+        }
+        File.WriteAllBytes(path, tex.EncodeToJPG());
+        
         isCompleted = true;
         Debug.Log($"{nameof(DallEApi)} completed");
     }

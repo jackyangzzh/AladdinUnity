@@ -48,7 +48,7 @@ namespace ChatGPTWrapper
 
             if (selectedModel == null)
             {
-                Debug.LogWarning($"{nameof(ChatGPTConversation)} [SendToChatGPT] Model name for ChatGPT's API is not set up yet.");
+                Debug.LogWarning($"{nameof(ChatGPTHelper)} [SendToChatGPT] Model name for ChatGPT's API is not set up yet.");
                 return;
             }
 
@@ -93,8 +93,6 @@ namespace ChatGPTWrapper
         private void ResolveResponse(ChatGPTRes res)
         {
             lastChatGPTMessage = res.choices[0].text.TrimStart('\n').Replace("<|im_end|>", "");
-
-            Debug.Log($"{nameof(ChatGPTConversation)}2: {res.choices[0].text}");
 
             GenerateScript(res.choices[0].text);
 
