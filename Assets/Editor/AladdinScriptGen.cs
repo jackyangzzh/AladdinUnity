@@ -4,23 +4,22 @@ using System.Collections;
 using Unity.EditorCoroutines.Editor;
 using ChatGPTWrapper;
 
-class AladdinUnity : EditorWindow
+class AladdinScriptGen : EditorWindow
 {
     [MenuItem("Aladdin Unity/Script Generation")]
     public static void ShowWindow()
     {
-        var window = GetWindow(typeof(AladdinUnity));
+        var window = GetWindow(typeof(AladdinScriptGen));
         window.titleContent = new GUIContent("Aladdin - Script Generation");
         window.Show();
     }
 
-    private string scriptName;
+    private string scriptName = "Untitled";
     private string scriptPrompt;
     private ChatGPTSetting chatGPTSetting;
     private AladdinUnityUtil.ScriptType scriptType;
 
     private bool scriptGenerating = false;
-    private string generateScriptButtonText = "Generate Script";
 
     private void OnEnable()
     {
@@ -46,8 +45,13 @@ class AladdinUnity : EditorWindow
         }
         else
         {
-            if (GUILayout.Button(generateScriptButtonText))
+            if (GUILayout.Button("Generate Script"))
             {
+                if(string.IsNullOrWhiteSpace(scriptPrompt))
+                {
+                    EditorGUILayout.LabelField("Prompt cannot be empty");
+                    return;
+                }
                 GenerateScript();
             }
         }
