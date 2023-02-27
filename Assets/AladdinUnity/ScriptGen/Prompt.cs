@@ -1,4 +1,4 @@
-﻿namespace ChatGPTWrapper {
+﻿namespace AladdinScriptGen {
     public class Prompt
     {
         public string CurrentPrompt = AladdinUnityUtil.DefaultPrompt;

@@ -8,7 +8,7 @@ using System.Collections;
 using System.Text;
 using UnityEngine.Networking;
 
-namespace ChatGPTWrapper
+namespace AladdinScriptGen
 {
     public enum Model
     {
@@ -42,7 +42,7 @@ namespace ChatGPTWrapper
             this.scriptType = scriptType;
         }
 
-        public IEnumerator GenerateScript(string message, ChatGPTSetting setting)
+        public IEnumerator GenerateScript(string message, OpenAiSetting setting)
         {
             isCompleted = false;
 
@@ -106,8 +106,6 @@ namespace ChatGPTWrapper
 
                 request.Dispose();
             }
-
-
         }
 
         private void ResolveResponse(ChatGPTRes res)

@@ -1,7 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ChatGPTWrapper {
+namespace AladdinScriptGen
+{
+    [Serializable]
+    public class Choices
+    {
+        public string text;
+    }
+
     [Serializable]
     public class ChatGPTRes
     {

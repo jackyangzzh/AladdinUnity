@@ -1,4 +1,5 @@
-﻿namespace ChatGPTWrapper {
+﻿namespace AladdinScriptGen
+{
     public class ChatGPTReq
     {
         public string model;
