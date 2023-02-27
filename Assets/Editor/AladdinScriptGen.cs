@@ -59,22 +59,8 @@ class AladdinScriptGen : EditorWindow
 
     private void GenerateScript()
     {
-        _ = EditorCoroutineUtility.StartCoroutine(GenerateScriptAsync(), this);
-    }
-
-    private IEnumerator GenerateScriptAsync()
-    {
-        scriptGenerating = true;
-
         ChatGPTHelper chatGPT = new(scriptName, scriptType);
-        chatGPT.SendToChatGPT(scriptPrompt, chatGPTSetting);
-
-        while (!chatGPT.IsCompleted)
-        {
-            yield return null;
-        }
-
-        scriptGenerating = false;
+        _ = EditorCoroutineUtility.StartCoroutine(chatGPT.GenerateScript(scriptPrompt, chatGPTSetting), this);
     }
 
 }

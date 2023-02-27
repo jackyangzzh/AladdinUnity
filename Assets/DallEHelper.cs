@@ -11,7 +11,7 @@ public class Prompt
     public string size;
 }
 
-public class DallEApi
+public class DallEHelper
 {
     private string url;
     private Prompt prompt;
@@ -19,7 +19,7 @@ public class DallEApi
     private bool isCompleted = true;
     public bool IsCompleted => isCompleted;
 
-    public DallEApi (string imagePrompt, int imageSize)
+    public DallEHelper (string imagePrompt, int imageSize)
     {
         prompt = new Prompt();
         prompt.prompt = imagePrompt;
@@ -29,12 +29,10 @@ public class DallEApi
 
     public IEnumerator GenerateTexture(ChatGPTSetting setting, string textureName)
     {
-        Debug.Log($"{nameof(DallEApi)} generating image...");
+        Debug.Log($"{nameof(DallEHelper)} generating image...");
         isCompleted = false;
 
         string json = JsonUtility.ToJson(prompt);
-
-        Debug.Log(json);
 
         using (var request = new UnityWebRequest("https://api.openai.com/v1/images/generations", "POST"))
         {
@@ -70,6 +68,6 @@ public class DallEApi
         File.WriteAllBytes(path, tex.EncodeToJPG());
         
         isCompleted = true;
-        Debug.Log($"{nameof(DallEApi)} completed");
+        Debug.Log($"{nameof(DallEHelper)} completed");
     }
 }

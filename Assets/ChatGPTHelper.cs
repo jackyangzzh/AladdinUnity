@@ -4,6 +4,9 @@ using UnityEngine.Events;
 using System.IO;
 using Unity.EditorCoroutines.Editor;
 using System.Globalization;
+using System.Collections;
+using System.Text;
+using UnityEngine.Networking;
 
 namespace ChatGPTWrapper
 {
@@ -19,11 +22,8 @@ namespace ChatGPTWrapper
         public bool IsCompleted => isCompleted;
 
         private bool isCompleted = false;
-        private const string _uri = "https://api.openai.com/v1/completions";
+        private const string uri = "https://api.openai.com/v1/completions";
 
-        private List<(string, string)> reqHeaders;
-
-        private Requests requests = new();
         private Prompt prompt = new();
         private string lastUserMsg;
         private string lastChatGPTMessage;
@@ -42,14 +42,14 @@ namespace ChatGPTWrapper
             this.scriptType = scriptType;
         }
 
-        public void SendToChatGPT(string message, ChatGPTSetting setting)
+        public IEnumerator GenerateScript(string message, ChatGPTSetting setting)
         {
             isCompleted = false;
 
             if (selectedModel == null)
             {
                 Debug.LogWarning($"{nameof(ChatGPTHelper)} [SendToChatGPT] Model name for ChatGPT's API is not set up yet.");
-                return;
+                //return;
             }
 
             Debug.Log($"[{nameof(ChatGPTHelper)}]: script generation starting...");
@@ -81,26 +81,46 @@ namespace ChatGPTWrapper
 
             string json = JsonUtility.ToJson(reqObj);
 
-            reqHeaders = new List<(string, string)>
+            using (var request = new UnityWebRequest(uri, "POST"))
             {
-                ("Authorization", $"Bearer {setting.APIKey}"),
-                ("Content-Type", "application/json")
-            };
+                request.SetRequestHeader("Authorization", $"Bearer {setting.APIKey}");
+                request.SetRequestHeader("Content-Type", "application/json");
 
-            _ = EditorCoroutineUtility.StartCoroutine(requests.PostReq<ChatGPTRes>(_uri, json, ResolveResponse, reqHeaders), this);
+                request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(json));
+                request.downloadHandler = new DownloadHandlerBuffer();
+                request.disposeDownloadHandlerOnDispose = true;
+                request.disposeUploadHandlerOnDispose = true;
+
+                yield return request.SendWebRequest();
+
+                if (request.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogError(request.error);
+                    yield break;
+                }
+                else
+                {
+                    var responseJson = JsonUtility.FromJson<ChatGPTRes>(request.downloadHandler.text);
+                    ResolveResponse(responseJson);
+                }
+
+                request.Dispose();
+            }
+
+
         }
 
         private void ResolveResponse(ChatGPTRes res)
         {
             lastChatGPTMessage = res.choices[0].text.TrimStart('\n').Replace("<|im_end|>", "");
 
-            GenerateScript(res.choices[0].text);
+            CreateScriptFile(res.choices[0].text);
 
             prompt.AppendText(Prompt.Speaker.ChatGPT, lastChatGPTMessage);
             chatGPTResponse.Invoke(lastChatGPTMessage);
         }
 
-        private void GenerateScript(string inputText)
+        private void CreateScriptFile(string inputText)
         {
             string fileExtension = "";
             switch (scriptType)

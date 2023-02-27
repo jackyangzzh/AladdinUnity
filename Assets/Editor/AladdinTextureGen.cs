@@ -67,7 +67,7 @@ class AladinTextureGen : EditorWindow
 
     private void GenerateScript()
     {
-        DallEApi dalle = new(texturePrompt, (int)textureSize);
+        DallEHelper dalle = new(texturePrompt, (int)textureSize);
         _ = EditorCoroutineUtility.StartCoroutine(dalle.GenerateTexture(chatGPTSetting, textureName), this);
     }
 
