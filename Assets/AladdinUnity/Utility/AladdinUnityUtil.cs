@@ -1,9 +1,18 @@
 public static class AladdinUnityUtil
 {
+    [System.Serializable]
     public enum ScriptType
     {
         CSharp,
         Shader
+    }
+
+    [System.Serializable]
+    public enum ImageSizes
+    {
+        _256x256 = 256,
+        _512x512 = 512,
+        _1024x1024 = 1024,
     }
 
     public const string CSharpExtension = "cs";

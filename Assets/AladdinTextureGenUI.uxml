@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:GroupBox />
+    <ui:Label text="Welcome to Aladdin Unity Texture Generation" display-tooltip-when-elided="true" style="-unity-font-style: bold; -unity-text-align: upper-center;" />
+    <ui:GroupBox />
+    <ui:TextField picking-mode="Ignore" label="Texture Name" value="Untitled" text="filler text" />
+    <uie:EnumField label="Texture Size" name="TextureSize" binding-path="TextureSize" value="AladdinUnityUtil+ImageSizes" />
+    <uie:ObjectField label="Setting" allow-scene-objects="false" />
+    <ui:TextField picking-mode="Ignore" label="Prompt" value="filler text" text="filler text" multiline="true" max-length="-1" />
+    <ui:Button text="Generate" display-tooltip-when-elided="true" />
+</ui:UXML>

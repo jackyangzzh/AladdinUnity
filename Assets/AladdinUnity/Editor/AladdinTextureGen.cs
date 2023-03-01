@@ -16,17 +16,10 @@ namespace AladdinTextureGen
 
         private string textureName = "Untitled";
         private string texturePrompt;
-        private SizeOptions textureSize;
+        private AladdinUnityUtil.ImageSizes textureSize = AladdinUnityUtil.ImageSizes._256x256;
         private OpenAiSetting openAiSetting;
 
         private bool scriptGenerating = false;
-
-        private enum SizeOptions
-        {
-            _256x256 = 256,
-            _512x512 = 512,
-            _1024x1024 = 1024,
-        }
 
         private void OnEnable()
         {
@@ -38,9 +31,9 @@ namespace AladdinTextureGen
         {
             textureName = EditorGUILayout.TextField("Texture Name", textureName);
 
-            openAiSetting = EditorGUILayout.ObjectField("Setting", openAiSetting, typeof(OpenAiSetting), false) as OpenAiSetting;
+            textureSize = (AladdinUnityUtil.ImageSizes)EditorGUILayout.EnumPopup("Texture Size", textureSize);
 
-            textureSize = (SizeOptions)EditorGUILayout.EnumPopup("Texture Size", textureSize);
+            openAiSetting = EditorGUILayout.ObjectField("Setting", openAiSetting, typeof(OpenAiSetting), false) as OpenAiSetting;
 
             EditorGUILayout.LabelField("Texture Prompt");
             GUIStyle style = new GUIStyle(EditorStyles.textArea);
