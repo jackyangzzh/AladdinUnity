@@ -20,9 +20,11 @@ namespace AladdinScriptGen
         private OpenAiSetting openAiSetting;
         private AladdinUnityUtil.ScriptType scriptType;
 
+        private bool canGenerate = true;
 
         private void OnEnable()
         {
+            canGenerate = true;
             openAiSetting = Resources.Load("DefaultOpenAiSetting") as OpenAiSetting;
         }
 
@@ -38,21 +40,29 @@ namespace AladdinScriptGen
             style.wordWrap = true;
             scriptPrompt = EditorGUILayout.TextArea(scriptPrompt, style);
 
-            if (GUILayout.Button("Generate Script"))
+            if (!canGenerate)
             {
-                if (string.IsNullOrWhiteSpace(scriptPrompt))
+                EditorGUILayout.LabelField("Script generating...");
+            }
+            else
+            {
+                if (GUILayout.Button("Generate Script"))
                 {
-                    EditorGUILayout.LabelField("Prompt cannot be empty");
-                    return;
+                    if (string.IsNullOrWhiteSpace(scriptPrompt))
+                    {
+                        EditorGUILayout.LabelField("Prompt cannot be empty");
+                        return;
+                    }
+                    GenerateScript();
                 }
-                GenerateScript();
             }
         }
 
         private void GenerateScript()
         {
+            canGenerate = false;
             ChatGPTHelper chatGPT = new(scriptName, scriptType);
-            _ = EditorCoroutineUtility.StartCoroutine(chatGPT.GenerateScript(scriptPrompt, openAiSetting), this);
+            _ = EditorCoroutineUtility.StartCoroutine(chatGPT.GenerateScript(scriptPrompt, openAiSetting, () => canGenerate = true), this);
         }
     }
 }

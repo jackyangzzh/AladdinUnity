@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.Networking;
 using System.Text;
 using System.IO;
+using Unity.VisualScripting;
+using System;
 
 public class Prompt
 {
@@ -29,7 +31,7 @@ namespace AladdinTextureGen
             prompt.size = $"{imageSize}x{imageSize}";
         }
 
-        public IEnumerator GenerateTexture(OpenAiSetting setting, string textureName)
+        public IEnumerator GenerateTexture(OpenAiSetting setting, string textureName, Action callback = null)
         {
             Debug.Log($"{nameof(DallEHelper)} generating image...");
             isCompleted = false;
@@ -50,6 +52,7 @@ namespace AladdinTextureGen
                 if (request.result != UnityWebRequest.Result.Success)
                 {
                     Debug.LogError(request.error);
+                    callback();
                     yield break;
                 }
 
@@ -70,6 +73,7 @@ namespace AladdinTextureGen
             File.WriteAllBytes(path, tex.EncodeToJPG());
 
             isCompleted = true;
+            callback();
             Debug.Log($"{nameof(DallEHelper)} completed");
         }
     }

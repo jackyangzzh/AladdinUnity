@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Collections;
 using System.Text;
 using UnityEngine.Networking;
+using System;
 
 namespace AladdinScriptGen
 {
@@ -42,7 +43,7 @@ namespace AladdinScriptGen
             this.scriptType = scriptType;
         }
 
-        public IEnumerator GenerateScript(string message, OpenAiSetting setting)
+        public IEnumerator GenerateScript(string message, OpenAiSetting setting, Action callback = null)
         {
             isCompleted = false;
 
@@ -96,6 +97,7 @@ namespace AladdinScriptGen
                 if (request.result != UnityWebRequest.Result.Success)
                 {
                     Debug.LogError(request.error);
+                    callback();
                     yield break;
                 }
                 else
@@ -106,6 +108,8 @@ namespace AladdinScriptGen
 
                 request.Dispose();
             }
+
+            callback();
         }
 
         private void ResolveResponse(ChatGPTRes res)

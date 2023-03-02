@@ -19,11 +19,11 @@ namespace AladdinTextureGen
         private AladdinUnityUtil.ImageSizes textureSize = AladdinUnityUtil.ImageSizes._256x256;
         private OpenAiSetting openAiSetting;
 
-        private bool scriptGenerating = false;
+        private bool canGenerate = true;
 
         private void OnEnable()
         {
-            scriptGenerating = false;
+            canGenerate = true;
             openAiSetting = Resources.Load("DefaultOpenAiSetting") as OpenAiSetting;
         }
 
@@ -40,9 +40,9 @@ namespace AladdinTextureGen
             style.wordWrap = true;
             texturePrompt = EditorGUILayout.TextArea(texturePrompt, style);
 
-            if (scriptGenerating)
+            if (!canGenerate)
             {
-                EditorGUILayout.LabelField("Script generating...");
+                EditorGUILayout.LabelField("Texture generating...");
             }
             else
             {
@@ -53,15 +53,16 @@ namespace AladdinTextureGen
                         EditorGUILayout.LabelField("Prompt cannot be empty");
                         return;
                     }
-                    GenerateScript();
+                    GenerateTexture();
                 }
             }
         }
 
-        private void GenerateScript()
+        private void GenerateTexture()
         {
+            canGenerate = false;
             DallEHelper dalle = new(texturePrompt, (int)textureSize);
-            _ = EditorCoroutineUtility.StartCoroutine(dalle.GenerateTexture(openAiSetting, textureName), this);
+            _ = EditorCoroutineUtility.StartCoroutine(dalle.GenerateTexture(openAiSetting, textureName, () => canGenerate = true), this);
         }
     }
 }
