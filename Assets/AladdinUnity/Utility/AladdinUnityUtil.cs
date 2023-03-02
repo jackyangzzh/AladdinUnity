@@ -1,4 +1,6 @@
-public static class AladdinUnityUtil
+using UnityEngine;
+
+public class AladdinUnityUtil : MonoBehaviour
 {
     [System.Serializable]
     public enum ScriptType
