@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:Label text="Aladdin Unity Texture Generation" display-tooltip-when-elided="true" style="-unity-text-align: upper-center; -unity-font-style: bold; border-top-width: 10px; border-bottom-width: 10px;" />
+    <ui:TextField picking-mode="Ignore" label="Texture Name" text="filler text" name="TextureNameTextField" />
+    <uie:EnumField label="Texture Size" value="Center" name="TextureSizeDropdown" />
+    <uie:ObjectField label="OpenAI Setting" name="OpenAiSettingField" />
+    <ui:Button text="Generate Texture" display-tooltip-when-elided="true" name="GenerateTextureButton" />
+</ui:UXML>
