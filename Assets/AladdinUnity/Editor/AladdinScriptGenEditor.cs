@@ -7,7 +7,7 @@ using UnityEngine.UIElements;
 
 public class AladdinScriptGenEditor : EditorWindow
 {
-    [MenuItem("Test/Script Generation Editor")]
+    [MenuItem("Aladdin Unity/Script Generation")]
     public static void ShowWindow()
     {
         var window = GetWindow<AladdinScriptGenEditor>();

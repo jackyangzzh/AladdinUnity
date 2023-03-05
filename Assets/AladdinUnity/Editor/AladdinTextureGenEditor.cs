@@ -4,11 +4,10 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-using static TreeEditor.TextureAtlas;
 
 public class AladdinTextureGenEditor : EditorWindow
 {
-    [MenuItem("Test/Texture Generation Editor")]
+    [MenuItem("Aladdin Unity/Texture Generation")]
     public static void ShowWindow()
     {
         var window = GetWindow<AladdinTextureGenEditor>();
