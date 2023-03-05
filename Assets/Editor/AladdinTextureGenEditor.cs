@@ -45,12 +45,22 @@ public class AladdinTextureGenEditor : EditorWindow
 
         // Setup UI
         generateTextureButton.clicked += GenerateTexture;
+        generateTextureButton.SetEnabled(false);
 
         textureSizeDropdown.Init(AladdinUnityUtil.ImageSizes._256x256);
 
         openAiSettingField.objectType = typeof(OpenAiSetting);
         openAiSetting = Resources.Load("DefaultOpenAiSetting") as OpenAiSetting;
         openAiSettingField.value = openAiSetting;
+    }
+
+    private void OnInspectorUpdate()
+    {
+        bool canGenerate = !string.IsNullOrWhiteSpace(textureNameTextField.text) &&
+                            !string.IsNullOrWhiteSpace(texturePromptTextField.text) &&
+                            openAiSettingField.value != null;
+
+        generateTextureButton.SetEnabled(canGenerate);
     }
 
     private void GenerateTexture()

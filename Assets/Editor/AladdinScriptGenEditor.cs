@@ -31,7 +31,7 @@ public class AladdinScriptGenEditor : EditorWindow
     private ObjectField openAiSettingField;
     private TextField scriptPromptTextField;
 
-    private void OnEnable()
+    private void CreateGUI()
     {
         uxml.CloneTree(rootVisualElement);
 
@@ -52,9 +52,20 @@ public class AladdinScriptGenEditor : EditorWindow
         openAiSettingField.value = openAiSetting;
     }
 
+    private void OnInspectorUpdate()
+    {
+        bool canGenerate = !string.IsNullOrWhiteSpace(scriptNameTextField.text) &&
+                            !string.IsNullOrWhiteSpace(scriptPromptTextField.text) &&
+                            openAiSettingField.value != null;
+
+        generateScriptButton.SetEnabled(canGenerate);
+    }
+
     private void GenerateScript()
     {
         Debug.LogError("Generate script");
+
+        
         ChatGPTHelper chatGPT = new(scriptNameTextField.text, (AladdinUnityUtil.ScriptType)scriptTypeDropdown.value);
         _ = EditorCoroutineUtility.StartCoroutine(chatGPT.GenerateScript(scriptPromptTextField.value, openAiSetting), this);
     }
