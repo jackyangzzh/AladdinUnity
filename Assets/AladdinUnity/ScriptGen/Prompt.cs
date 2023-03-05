@@ -1,9 +1,11 @@
-﻿namespace AladdinScriptGen {
+﻿namespace AladdinScriptGen
+{
     public class Prompt
     {
         public string CurrentPrompt = AladdinUnityUtil.DefaultPrompt;
 
-        public enum Speaker {
+        public enum Speaker
+        {
             User,
             ChatGPT
         }

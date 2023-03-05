@@ -1,6 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
     <ui:Label text="Aladdin Unity Script Generation" display-tooltip-when-elided="true" style="-unity-text-align: upper-center; -unity-font-style: bold; border-top-width: 10px; border-bottom-width: 10px;" />
-    <ui:TextField picking-mode="Ignore" label="Script Name" text="Untitled" name="ScriptNameTextField" style="height: 17px;" />
     <uie:EnumField label="Script Type" value="Center" name="ScriptTypeDropdown" />
     <uie:ObjectField label="OpenAI Setting" name="OpenAiSettingField" />
     <ui:TextField picking-mode="Ignore" label="Script Prompt" multiline="true" name="ScriptPromptTextField" style="height: 50px; white-space: normal;" />

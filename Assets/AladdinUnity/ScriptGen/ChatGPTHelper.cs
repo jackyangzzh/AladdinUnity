@@ -1,13 +1,10 @@
-using UnityEngine;
-using System.Collections.Generic;
-using UnityEngine.Events;
-using System.IO;
-using Unity.EditorCoroutines.Editor;
-using System.Globalization;
-using System.Collections;
-using System.Text;
-using UnityEngine.Networking;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Text;
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.Networking;
 
 namespace AladdinScriptGen
 {
@@ -41,9 +38,6 @@ namespace AladdinScriptGen
 
     public class ChatGPTHelper
     {
-        public bool IsCompleted => isCompleted;
-
-        private bool isCompleted = false;
         private const string uri = "https://api.openai.com/v1/completions";
 
         private Prompt prompt = new();
@@ -51,23 +45,18 @@ namespace AladdinScriptGen
         private string lastChatGPTMessage;
         private string selectedModel = "text-davinci-003";
 
-        private string fileName = "Untitled";
         private AladdinUnityUtil.ScriptType scriptType;
 
         [Space(15)]
         public UnityEvent<string> chatGPTResponse = new();
 
-        public ChatGPTHelper(string fileName, AladdinUnityUtil.ScriptType scriptType)
+        public ChatGPTHelper(AladdinUnityUtil.ScriptType scriptType)
         {
-            isCompleted = false;
-            this.fileName = fileName;
             this.scriptType = scriptType;
         }
 
-        public IEnumerator GenerateScript(string message, OpenAiSetting setting, Action callback = null)
+        public IEnumerator GenerateScript(string message, OpenAiSetting setting, bool saveFile = false, Action callback = null)
         {
-            isCompleted = false;
-
             if (selectedModel == null)
             {
                 Debug.LogWarning($"{nameof(ChatGPTHelper)} [SendToChatGPT] Model name for ChatGPT's API is not set up yet.");
@@ -124,7 +113,15 @@ namespace AladdinScriptGen
                 else
                 {
                     var responseJson = JsonUtility.FromJson<ChatGPTRes>(request.downloadHandler.text);
-                    ResolveResponse(responseJson);
+                    lastChatGPTMessage = responseJson.choices[0].text.TrimStart('\n').Replace("<|im_end|>", "");
+
+                    if (saveFile)
+                    {
+                        AladdinUnityUtil.CreateScriptFile(responseJson.choices[0].text, scriptType);
+                    }
+
+                    prompt.AppendText(Prompt.Speaker.ChatGPT, lastChatGPTMessage);
+                    chatGPTResponse.Invoke(lastChatGPTMessage);
                 }
 
                 request.Dispose();
@@ -134,40 +131,6 @@ namespace AladdinScriptGen
             {
                 callback();
             }
-        }
-
-        private void ResolveResponse(ChatGPTRes res)
-        {
-            lastChatGPTMessage = res.choices[0].text.TrimStart('\n').Replace("<|im_end|>", "");
-
-            CreateScriptFile(res.choices[0].text);
-
-            prompt.AppendText(Prompt.Speaker.ChatGPT, lastChatGPTMessage);
-            chatGPTResponse.Invoke(lastChatGPTMessage);
-        }
-
-        private void CreateScriptFile(string inputText)
-        {
-            string fileExtension = "";
-            switch (scriptType)
-            {
-                case AladdinUnityUtil.ScriptType.CSharp:
-                    fileExtension = AladdinUnityUtil.CSharpExtension;
-                    break;
-                case AladdinUnityUtil.ScriptType.Shader:
-                    fileExtension = AladdinUnityUtil.ShaderExtension;
-                    break;
-            }
-
-            string path = Path.Combine(Application.dataPath, $"{fileName}.{fileExtension}");
-            if (File.Exists(path))
-            {
-                File.Delete(path);
-            }
-            File.WriteAllText(path, inputText);
-            Debug.Log($"[{nameof(ChatGPTHelper)}] script created in: {path}");
-
-            isCompleted = true;
         }
     }
 }

@@ -1,10 +1,8 @@
+using System;
 using System.Collections;
+using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
-using System.Text;
-using System.IO;
-using Unity.VisualScripting;
-using System;
 
 public class Prompt
 {
@@ -20,21 +18,19 @@ namespace AladdinTextureGen
         private string url;
         private Prompt prompt;
 
-        private bool isCompleted = true;
-        public bool IsCompleted => isCompleted;
-
         public DallEHelper(string imagePrompt, int imageSize)
         {
-            prompt = new Prompt();
-            prompt.prompt = imagePrompt;
-            prompt.n = 1;
-            prompt.size = $"{imageSize}x{imageSize}";
+            prompt = new()
+            {
+                prompt = imagePrompt,
+                n = 1,
+                size = $"{imageSize}x{imageSize}"
+            };
         }
 
-        public IEnumerator GenerateTexture(OpenAiSetting setting, string textureName, Action callback = null)
+        public IEnumerator GenerateTexture(string textureName, OpenAiSetting setting, bool saveFile = false, Action callback = null)
         {
             Debug.Log($"{nameof(DallEHelper)} generating image...");
-            isCompleted = false;
 
             string json = JsonUtility.ToJson(prompt);
 
@@ -65,21 +61,15 @@ namespace AladdinTextureGen
             Texture texture = DownloadHandlerTexture.GetContent(www);
             Texture2D tex = texture as Texture2D;
 
-            string path = Path.Combine(Application.dataPath, $"{textureName}.jpg");
-            if (File.Exists(path))
+            if (saveFile)
             {
-                File.Delete(path);
+                AladdinUnityUtil.CreateTextureFile(tex);
             }
-            File.WriteAllBytes(path, tex.EncodeToJPG());
 
-            isCompleted = true;
-
-            if(callback != null)
+            if (callback != null)
             {
                 callback();
             }
-
-            Debug.Log($"{nameof(DallEHelper)} completed");
         }
     }
 }

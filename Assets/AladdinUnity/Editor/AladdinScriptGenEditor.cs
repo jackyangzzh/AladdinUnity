@@ -19,13 +19,11 @@ public class AladdinScriptGenEditor : EditorWindow
 
     private OpenAiSetting openAiSetting;
 
-    private const string ScriptNameTextField = "ScriptNameTextField";
     private const string GenerateScriptButton = "GenerateScriptButton";
     private const string ScriptTypeDropdown = "ScriptTypeDropdown";
     private const string OpenAiSettingField = "OpenAiSettingField";
     private const string ScriptPromptTextField = "ScriptPromptTextField";
 
-    private TextField scriptNameTextField;
     private Button generateScriptButton;
     private EnumField scriptTypeDropdown;
     private ObjectField openAiSettingField;
@@ -36,11 +34,10 @@ public class AladdinScriptGenEditor : EditorWindow
         uxml.CloneTree(rootVisualElement);
 
         // Bind UI
-        scriptNameTextField = rootVisualElement.Q<TextField>(name = ScriptNameTextField);
-        generateScriptButton = rootVisualElement.Q<Button>(name = GenerateScriptButton);
         scriptTypeDropdown = rootVisualElement.Q<EnumField>(name = ScriptTypeDropdown);
         openAiSettingField = rootVisualElement.Q<ObjectField>(name = OpenAiSettingField);
         scriptPromptTextField = rootVisualElement.Q<TextField>(name = ScriptPromptTextField);
+        generateScriptButton = rootVisualElement.Q<Button>(name = GenerateScriptButton);
 
         // Setup UI
         generateScriptButton.clicked += GenerateScript;
@@ -54,8 +51,7 @@ public class AladdinScriptGenEditor : EditorWindow
 
     private void OnInspectorUpdate()
     {
-        bool canGenerate = !string.IsNullOrWhiteSpace(scriptNameTextField.text) &&
-                            !string.IsNullOrWhiteSpace(scriptPromptTextField.text) &&
+        bool canGenerate = !string.IsNullOrWhiteSpace(scriptPromptTextField.text) &&
                             openAiSettingField.value != null;
 
         generateScriptButton.SetEnabled(canGenerate);
@@ -63,10 +59,7 @@ public class AladdinScriptGenEditor : EditorWindow
 
     private void GenerateScript()
     {
-        Debug.LogError("Generate script");
-
-        
-        ChatGPTHelper chatGPT = new(scriptNameTextField.text, (AladdinUnityUtil.ScriptType)scriptTypeDropdown.value);
-        _ = EditorCoroutineUtility.StartCoroutine(chatGPT.GenerateScript(scriptPromptTextField.value, openAiSetting), this);
+        ChatGPTHelper chatGPT = new((AladdinUnityUtil.ScriptType)scriptTypeDropdown.value);
+        _ = EditorCoroutineUtility.StartCoroutine(chatGPT.GenerateScript(scriptPromptTextField.value, openAiSetting, true), this);
     }
 }
