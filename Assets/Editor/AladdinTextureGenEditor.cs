@@ -24,23 +24,39 @@ public class AladdinTextureGenEditor : EditorWindow
     private const string GenerateTextureButton = "GenerateTextureButton";
     private const string TextureSizeDropdown = "TextureSizeDropdown";
     private const string OpenAiSettingField = "OpenAiSettingField";
+    private const string TexturePromptTextField = "TexturePromptTextField";
+
+    private TextField textureNameTextField;
+    private Button generateTextureButton;
+    private EnumField textureSizeDropdown;
+    private ObjectField openAiSettingField;
+    private TextField texturePromptTextField;
 
     private void OnEnable()
     {
         uxml.CloneTree(rootVisualElement);
 
-        Debug.Log(rootVisualElement.Q<TextField>(name = TextureNameTextField).text);
-        rootVisualElement.Q<Button>(name = GenerateTextureButton).clicked += GenerateTexture;
+        // Bind UI
+        textureNameTextField = rootVisualElement.Q<TextField>(name = TextureNameTextField);
+        generateTextureButton = rootVisualElement.Q<Button>(name = GenerateTextureButton);
+        textureSizeDropdown = rootVisualElement.Q<EnumField>(name = TextureSizeDropdown);
+        openAiSettingField = rootVisualElement.Q<ObjectField>(name = OpenAiSettingField);
+        texturePromptTextField = rootVisualElement.Q<TextField>(name = TexturePromptTextField);
 
-        rootVisualElement.Q<EnumField>(name = TextureSizeDropdown).Init(AladdinUnityUtil.ImageSizes._256x256);
-        
-        rootVisualElement.Q<ObjectField>(name = OpenAiSettingField).objectType = typeof(OpenAiSetting);
+        // Setup UI
+        generateTextureButton.clicked += GenerateTexture;
+
+        textureSizeDropdown.Init(AladdinUnityUtil.ImageSizes._256x256);
+
+        openAiSettingField.objectType = typeof(OpenAiSetting);
         openAiSetting = Resources.Load("DefaultOpenAiSetting") as OpenAiSetting;
-        rootVisualElement.Q<ObjectField>(name = OpenAiSettingField).value = openAiSetting;
+        openAiSettingField.value = openAiSetting;
     }
 
     private void GenerateTexture()
     {
         Debug.LogError("Generate texture");
+        DallEHelper dalle = new(texturePromptTextField.text, (int)(AladdinUnityUtil.ImageSizes)textureSizeDropdown.value);
+        _ = EditorCoroutineUtility.StartCoroutine(dalle.GenerateTexture(openAiSetting, texturePromptTextField.text), this);
     }
 }

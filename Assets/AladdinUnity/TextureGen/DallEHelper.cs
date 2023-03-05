@@ -73,7 +73,12 @@ namespace AladdinTextureGen
             File.WriteAllBytes(path, tex.EncodeToJPG());
 
             isCompleted = true;
-            callback();
+
+            if(callback != null)
+            {
+                callback();
+            }
+
             Debug.Log($"{nameof(DallEHelper)} completed");
         }
     }
