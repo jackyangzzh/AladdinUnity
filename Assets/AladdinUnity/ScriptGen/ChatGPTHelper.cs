@@ -109,7 +109,10 @@ namespace AladdinScriptGen
                 request.Dispose();
             }
 
-            callback();
+            if (callback != null)
+            {
+                callback();
+            }
         }
 
         private void ResolveResponse(ChatGPTRes res)
