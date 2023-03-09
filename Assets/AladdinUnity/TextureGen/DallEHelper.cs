@@ -28,7 +28,14 @@ namespace AladdinTextureGen
             };
         }
 
-        public IEnumerator GenerateTexture(string textureName, OpenAiSetting setting, bool saveFile = false, Action callback = null)
+        /// <summary>
+        /// Generate an image based on prompt
+        /// </summary>
+        /// <param name="setting">OpenAI settings</param>
+        /// <param name="saveFile">Save generated string as a file</param>
+        /// <param name="callback">Callback action</param>
+        /// <returns></returns>
+        public IEnumerator GenerateTexture(OpenAiSetting setting, bool saveFile = false, Action callback = null)
         {
             Debug.Log($"{nameof(DallEHelper)} generating image...");
 

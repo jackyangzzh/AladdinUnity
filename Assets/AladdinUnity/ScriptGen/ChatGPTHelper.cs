@@ -55,14 +55,16 @@ namespace AladdinScriptGen
             this.scriptType = scriptType;
         }
 
+        /// <summary>
+        /// Generate strings based on message sent to ChatGPT
+        /// </summary>
+        /// <param name="message">Message to send to ChatGPT</param>
+        /// <param name="setting">OpenAI settings</param>
+        /// <param name="saveFile">Save generated string as a file</param>
+        /// <param name="callback">Callback action</param>
+        /// <returns></returns>
         public IEnumerator GenerateScript(string message, OpenAiSetting setting, bool saveFile = false, Action callback = null)
         {
-            if (selectedModel == null)
-            {
-                Debug.LogWarning($"{nameof(ChatGPTHelper)} [SendToChatGPT] Model name for ChatGPT's API is not set up yet.");
-                //return;
-            }
-
             Debug.Log($"[{nameof(ChatGPTHelper)}]: script generation starting...");
 
             lastUserMsg = message;
