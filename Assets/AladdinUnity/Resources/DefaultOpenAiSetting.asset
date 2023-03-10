@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e50917a7b9680a2469e63ac29d5c1b7e, type: 3}
   m_Name: DefaultOpenAiSetting
   m_EditorClassIdentifier: 
-  APIKey: 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
+  APIKey: 
   Model: 0
   MaxToken: 3072
   Temperature: 0.6
