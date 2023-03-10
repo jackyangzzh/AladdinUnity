@@ -60,7 +60,7 @@ public class AladdinTextureGenEditor : EditorWindow
 
     private void GenerateTexture()
     {
-        DallEHelper dalle = new(texturePromptTextField.text, (int)(AladdinUnityUtil.ImageSizes)textureSizeDropdown.value);
-        _ = EditorCoroutineUtility.StartCoroutine(dalle.GenerateTexture(texturePromptTextField.text, openAiSetting, true), this);
+        AladdinTextureGenerator aladdin = new(openAiSetting);
+        _ = EditorCoroutineUtility.StartCoroutine(aladdin.GenerateTexture(texturePromptTextField.text, (int)(AladdinUnityUtil.ImageSizes)textureSizeDropdown.value, true), this);
     }
 }

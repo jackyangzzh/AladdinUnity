@@ -3,6 +3,7 @@ using System.Collections;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
+using static AladdinUnityUtil;
 
 public class Prompt
 {
@@ -13,19 +14,14 @@ public class Prompt
 
 namespace AladdinTextureGen
 {
-    public class DallEHelper
+    public class AladdinTextureGenerator
     {
         private string url;
-        private Prompt prompt;
+        private OpenAiSetting setting;
 
-        public DallEHelper(string imagePrompt, int imageSize)
+        public AladdinTextureGenerator(OpenAiSetting setting)
         {
-            prompt = new()
-            {
-                prompt = imagePrompt,
-                n = 1,
-                size = $"{imageSize}x{imageSize}"
-            };
+            this.setting = setting;
         }
 
         /// <summary>
@@ -35,9 +31,16 @@ namespace AladdinTextureGen
         /// <param name="saveFile">Save generated string as a file</param>
         /// <param name="callback">Callback action</param>
         /// <returns></returns>
-        public IEnumerator GenerateTexture(OpenAiSetting setting, bool saveFile = false, Action callback = null)
+        public IEnumerator GenerateTexture(string imagePrompt, int imageSize, bool saveFile = false, Action callback = null)
         {
-            Debug.Log($"{nameof(DallEHelper)} generating image...");
+            Debug.Log($"{nameof(AladdinTextureGenerator)} generating image...");
+
+            Prompt prompt = new()
+            {
+                prompt = imagePrompt,
+                n = 1,
+                size = $"{imageSize}x{imageSize}"
+            };
 
             string json = JsonUtility.ToJson(prompt);
 
@@ -55,7 +58,10 @@ namespace AladdinTextureGen
                 if (request.result != UnityWebRequest.Result.Success)
                 {
                     Debug.LogError(request.error);
-                    callback();
+                    if (callback != null)
+                    {
+                        callback();
+                    }
                     yield break;
                 }
 

@@ -59,7 +59,7 @@ public class AladdinScriptGenEditor : EditorWindow
 
     private void GenerateScript()
     {
-        ChatGPTHelper chatGPT = new((AladdinUnityUtil.ScriptType)scriptTypeDropdown.value);
-        _ = EditorCoroutineUtility.StartCoroutine(chatGPT.GenerateScript(scriptPromptTextField.value, openAiSetting, true), this);
+        AladdinScriptGenerator aladdin = new(openAiSetting);
+        _ = EditorCoroutineUtility.StartCoroutine(aladdin.GenerateScript(scriptPromptTextField.value, (AladdinUnityUtil.ScriptType)scriptTypeDropdown.value, true), this);
     }
 }

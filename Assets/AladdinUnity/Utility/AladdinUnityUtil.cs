@@ -51,7 +51,7 @@ public static class AladdinUnityUtil
                 File.Delete(path);
             }
             File.WriteAllText(path, inputText);
-            Debug.Log($"[{nameof(ChatGPTHelper)}] script created in: {path}");
+            Debug.Log($"[{nameof(AladdinScriptGenerator)}] script created in: {path}");
         }
     }
 
@@ -66,7 +66,7 @@ public static class AladdinUnityUtil
                 File.Delete(path);
             }
             File.WriteAllBytes(path, tex.EncodeToJPG());
-            Debug.Log($"[{nameof(DallEHelper)}] texture created in: {path}");
+            Debug.Log($"[{nameof(AladdinTextureGenerator)}] texture created in: {path}");
         }
     }
 }

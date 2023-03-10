@@ -36,7 +36,7 @@ namespace AladdinScriptGen
         public List<Choices> choices;
     }
 
-    public class ChatGPTHelper
+    public class AladdinScriptGenerator
     {
         private const string uri = "https://api.openai.com/v1/completions";
 
@@ -44,15 +44,16 @@ namespace AladdinScriptGen
         private string lastUserMsg;
         private string lastChatGPTMessage;
         private string selectedModel = "text-davinci-003";
+        private OpenAiSetting setting;
 
         private AladdinUnityUtil.ScriptType scriptType;
 
         [Space(15)]
         public UnityEvent<string> chatGPTResponse = new();
 
-        public ChatGPTHelper(AladdinUnityUtil.ScriptType scriptType)
+        public AladdinScriptGenerator(OpenAiSetting setting)
         {
-            this.scriptType = scriptType;
+            this.setting = setting;
         }
 
         /// <summary>
@@ -63,9 +64,9 @@ namespace AladdinScriptGen
         /// <param name="saveFile">Save generated string as a file</param>
         /// <param name="callback">Callback action</param>
         /// <returns></returns>
-        public IEnumerator GenerateScript(string message, OpenAiSetting setting, bool saveFile = false, Action callback = null)
+        public IEnumerator GenerateScript(string message, AladdinUnityUtil.ScriptType scriptType, bool saveFile = false, Action callback = null)
         {
-            Debug.Log($"[{nameof(ChatGPTHelper)}]: script generation starting...");
+            Debug.Log($"[{nameof(AladdinScriptGenerator)}]: script generation starting...");
 
             lastUserMsg = message;
 
@@ -109,7 +110,10 @@ namespace AladdinScriptGen
                 if (request.result != UnityWebRequest.Result.Success)
                 {
                     Debug.LogError(request.error);
-                    callback();
+                    if (callback != null)
+                    {
+                        callback();
+                    }
                     yield break;
                 }
                 else
