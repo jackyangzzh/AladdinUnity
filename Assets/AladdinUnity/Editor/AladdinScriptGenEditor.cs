@@ -42,7 +42,7 @@ public class AladdinScriptGenEditor : EditorWindow
         // Setup UI
         generateScriptButton.clicked += GenerateScript;
 
-        scriptTypeDropdown.Init(AladdinUnityUtil.ScriptType.CSharp);
+        scriptTypeDropdown.Init(AladdinUnityUtil.ScriptType.Csharp);
 
         openAiSettingField.objectType = typeof(OpenAiSetting);
         openAiSetting = Resources.Load("DefaultOpenAiSetting") as OpenAiSetting;

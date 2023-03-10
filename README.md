@@ -20,7 +20,7 @@ Aladdin is a Unity plugin uses AI to assist developers in writing code and gener
 ### Code Generation
 The code generation feature helps developers to write C# code or Shader by inputing prompt. To use it, follow these steps:
 
-1. Open the AI Code Helper window by going to the menu bar, select `Aladdin Unity -> Script Generation`
+1. Open the AI Code Helper window by going to the menu bar, select `Aladdin Unity -> Script Generation`.
    ![CodeGen](Screenshot/code-gen.png)
 2. Select the script type you want to generate
 3. Enter a brief description of what you want your code to do in the "Script Prompt"
@@ -33,6 +33,22 @@ The Texture Generator feature allows developers to generate textures quickly and
     ![TextureGen](Screenshot/texture-gen.png)
 2. Choose the type of texture you want to generate from the "Texture Size" dropdown menu.
 3. Click the "Generate Texture" button to generate your texture in your desire location.
+
+## Aladdin API
+### Script Generation
+```
+// Instantiate ChatGPTHelper
+ AladdinScriptGenerator aladdin = new([OpenAiSetting]);
+// Generate script
+aladdin.GenerateScript([script prompt], [script type]); // Coroutine
+```
+### Texture Generation
+```
+// Instantiate DalleHelper
+ AladdinTextureGenerator aladdin = new([OpenAiSetting]);
+// Generate texture
+aladdin.GenerateTexture([texture prompt], [texture size]); // Coroutine
+```
 
 ## Troubleshooting
 If you encounter any issues with the plugin, please make sure that you have an active internet connection and that you're using the latest version of Unity.

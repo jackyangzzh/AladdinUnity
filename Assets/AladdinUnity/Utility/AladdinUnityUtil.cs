@@ -1,6 +1,7 @@
 using AladdinScriptGen;
 using AladdinTextureGen;
 using System.IO;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -9,8 +10,9 @@ public static class AladdinUnityUtil
     [System.Serializable]
     public enum ScriptType
     {
-        CSharp,
-        Shader
+        Csharp,
+        Shader,
+        TextFile,
     }
 
     [System.Serializable]
@@ -21,12 +23,12 @@ public static class AladdinUnityUtil
         _1024x1024 = 1024,
     }
 
-    public const string CSharpExtension = "cs";
-    public const string ShaderExtension = "shader";
+    private const string CSharpExtension = "cs";
+    private const string ShaderExtension = "shader";
+    private const string TextFileExtension = "txt"; 
 
     public const string CSharpPrompt = "You are ChatGPT, an expert in Unity C# coding.";
     public const string ShaderPrompt = "You are ChatGPT, an expert in Unity Shader.";
-
     public const string DefaultPrompt = "You are ChatGPT, a large language model trained by OpenAI.";
 
     public static void CreateScriptFile(string inputText, AladdinUnityUtil.ScriptType scriptType)
@@ -34,11 +36,14 @@ public static class AladdinUnityUtil
         string fileExtension = "";
         switch (scriptType)
         {
-            case AladdinUnityUtil.ScriptType.CSharp:
-                fileExtension = AladdinUnityUtil.CSharpExtension;
+            case ScriptType.Csharp:
+                fileExtension = CSharpExtension;
                 break;
-            case AladdinUnityUtil.ScriptType.Shader:
-                fileExtension = AladdinUnityUtil.ShaderExtension;
+            case ScriptType.Shader:
+                fileExtension = ShaderExtension;
+                break;
+            case ScriptType.TextFile:
+                fileExtension = TextFileExtension;
                 break;
         }
 

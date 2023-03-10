@@ -72,7 +72,7 @@ namespace AladdinScriptGen
 
             switch (scriptType)
             {
-                case AladdinUnityUtil.ScriptType.CSharp:
+                case AladdinUnityUtil.ScriptType.Csharp:
                     prompt.CurrentPrompt = AladdinUnityUtil.CSharpPrompt;
                     break;
                 case AladdinUnityUtil.ScriptType.Shader:
