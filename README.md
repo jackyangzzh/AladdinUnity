@@ -1,3 +1,4 @@
+![Aladdin Unity](Screenshot/aladdinunity.png)
 # Aladdin Unity
 Aladdin is a Unity plugin uses AI to assist developers in writing code and generating textures. It aims to make the development process faster and more efficient.
 
