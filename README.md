@@ -57,6 +57,11 @@ aladdin.GenerateTexture([texture prompt], [texture size]); // Coroutine
 ### Code Generation
 ![CodeGen](Screenshot/shader-gen-demo.png)
 
+## Next Step
+ I'm planning to make Aladdin Unity a general purpose plugin (not just Unity development tooling) that developers can use in their Unity application to quickly get generative AI up and running. In fact, I'm currently using Aladdin Unity to make my own Unity app and will continuously improve it based on my experience.
+
+ Feel free to contribute and make the plugin more developer-friendly and accessible to everyone! 
+
 ## Troubleshooting
 If you encounter any issues with the plugin, please make sure that you have an active internet connection and that you're using the latest version of Unity.
 If you continue to experience issues, please get in touch with me,
