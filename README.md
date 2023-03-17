@@ -51,6 +51,12 @@ aladdin.GenerateScript([script prompt], [script type]); // Coroutine
 aladdin.GenerateTexture([texture prompt], [texture size]); // Coroutine
 ```
 
+## Demo
+### Texture Generation
+![TextureGen](Screenshot/texture-gen-demo.png)
+### Code Generation
+![CodeGen](Screenshot/shader-gen-demo.png)
+
 ## Troubleshooting
 If you encounter any issues with the plugin, please make sure that you have an active internet connection and that you're using the latest version of Unity.
 If you continue to experience issues, please get in touch with me,
